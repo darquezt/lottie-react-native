@@ -64,6 +64,8 @@ const propTypes = {
   source: PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired,
   onAnimationFinish: PropTypes.func,
   onLayout: PropTypes.func,
+  defaultStartFrame: PropTypes.number,
+  defaultEndFrame: PropTypes.number,
 };
 
 const defaultProps = {
@@ -74,6 +76,8 @@ const defaultProps = {
   autoSize: false,
   enableMergePathsAndroidForKitKatAndAbove: false,
   resizeMode: 'contain',
+  defaultStartFrame: -1,
+  defaultEndFrame: -1,
 };
 
 const viewConfig = {
@@ -113,14 +117,14 @@ class LottieView extends React.PureComponent {
     });
   }
 
-  play(startFrame = -1, endFrame = -1) {
+  play(startFrame = this.props.defaultStartFrame, endFrame = this.props.defaultEndFrame) {
     this.runCommand('play', [startFrame, endFrame]);
   }
 
   reset() {
     this.runCommand('reset');
   }
-  
+
   pause() {
     this.runCommand('pause');
   }
@@ -162,7 +166,7 @@ class LottieView extends React.PureComponent {
       this.props.onAnimationFinish(evt.nativeEvent.isCancelled);
     }
   }
-  
+
   onLayout(evt) {
     if (this.props.onLayout) {
       this.props.onLayout(evt);
@@ -185,7 +189,7 @@ class LottieView extends React.PureComponent {
 
     const speed =
       this.props.duration && sourceJson && this.props.source.fr
-        ? Math.round(this.props.source.op / this.props.source.fr * 1000 / this.props.duration)
+        ? Math.round(((this.props.source.op / this.props.source.fr) * 1000) / this.props.duration)
         : this.props.speed;
 
     return (
